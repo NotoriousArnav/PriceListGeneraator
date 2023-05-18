@@ -15,7 +15,7 @@
       "name": "SS Margin",
       "value": 0.05
     },
-    "GSTpercent":{
+    "GST":{
       "name": "GST",
       "value": 0.12
     },

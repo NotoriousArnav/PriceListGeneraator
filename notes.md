@@ -55,5 +55,5 @@ netrate/basic\_price
 - Import Duty (importduty)
 basicprice/(IDpercent+1)
 
-- Trade Discount
+- Trade Discount (td)
 basicprice/(TDpercent+1)
