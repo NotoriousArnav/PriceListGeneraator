@@ -1,0 +1,30 @@
+{
+    "RMpercent":{
+        "name": "Retail Margin",
+        "value": 0.4
+    },
+    "WSPercent":{
+        "name": "W/S Margin",
+        "value": 0.11
+    },
+    "DistMargin": {
+        "name": "Distributor Margin",
+        "value": 0.1
+    },
+    "SSMargin":{
+      "name": "SS Margin",
+      "value": 0.05
+    },
+    "GSTpercent":{
+      "name": "GST",
+      "value": 0.12
+    },
+    "IDpercent":{
+      "name": "Import Duty",
+      "value": 0.1
+    },
+    "TDpercent":{
+      "name": "Trade Discount",
+      "value": 0.05
+    }
+}
