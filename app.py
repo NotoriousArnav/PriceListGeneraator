@@ -1,4 +1,5 @@
 import json
+from pprint import pprint
 
 class Constants:
     def __init__(self, json_path):
@@ -30,9 +31,10 @@ def calculate(MRPpu, qty, constants):
 
 if __name__ == "__main__":
     constants = Constants('consts.json')
+    print("This is just a proof of Concept.")
     for var, field in constants.__dict__.items():
         print(f"{var=}\t{field['name']=}\t{field['value']=}")
-
-    print(calculate(50, 200, constants))
+    input("Product Name: ")
+    pprint(calculate(float(input("MRP per Unit: ")), float(input("Case Size: ")), constants))
 
 
