@@ -24,7 +24,7 @@ This is a Flask-based API for calculating product prices based on the given MRP 
 
 3. Install the required dependencies:
    ```shell
-   pip install -r requirements.txt
+   pip install flask
    ```
 
 ## Usage
