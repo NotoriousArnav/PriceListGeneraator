@@ -4,6 +4,11 @@
     <title>Calculate Form</title>
     <meta name="viewport" content="initial-scale=1.0; width=device-width;">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.0/dist/alpine.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+ 
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -40,7 +45,8 @@
                 <label for="qty">Case Size</label>
                 <input type="number" class="form-control" id="qty" required>
             </div>
-            <button type="submit" class="btn btn-primary" onclick="calculate(event)">Calculate</button>
+            <button class="btn btn-primary" onclick="calculate(event)">Calculate</button>
+            <button id="export2CSV" class="btn btn-primary me-2" onclick="exportCSV()">Export as CSV</button>
         </form>
 
 
@@ -70,7 +76,7 @@
         </table>
 
         <div class="mt-4">
-            <button id="exportCSV" class="btn btn-primary me-2" style="display: none;" onclick="exportCSV()">Export as CSV</button>
+            
         </div>
     </div>
     <!-- Existing code -->
@@ -150,6 +156,7 @@
 <!-- Existing code -->
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 <script>
     // Load Constants
     axios.get('/api/constants')
@@ -174,16 +181,24 @@
         });
 </script>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.0/dist/alpine.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-    <script>
+   <script>
         var resultsData = [];
+function checEmpty() {
+  pn = document.getElementById('productName')
+    MRPpu = document.getElementById('MRPpu')
+    qty = document.getElementById('qty')
+    if ((pn.value === '')&&(MRPpu.value === '')&&(qty.value === '')){
+    alert('Invalid Response')
+    return false
+  }
+  return true
+}
 
         function calculate(event) {
-            event.preventDefault();
-
+          event.preventDefault();
+          if (!checEmpty()){
+            return;
+          }
             var productName = document.getElementById('productName').value;
             var MRPpu = parseFloat(document.getElementById('MRPpu').value);
             var qty = parseFloat(document.getElementById('qty').value);
@@ -196,7 +211,6 @@
   var tdPercent = parseFloat(document.getElementById('trade-discount').value);
   var wsPercent = parseFloat(document.getElementById('ws-margin').value);
   var basicPrice = parseFloat(document.getElementById('basic-price').value);
-
 
             axios.get('/api/calculate', {
                 params: {
@@ -250,7 +264,7 @@
 
                 if (resultsData.length === 1) {
                     document.getElementById('collapseButton').style.display = 'block';
-                    document.getElementById('exportCSV').style.display = 'block';
+                    document.getElementById('export2CSV').style.display = 'block';
                 }
             })
             .catch(function (error) {
@@ -281,6 +295,10 @@
         }
 
         function exportCSV() {
+          if (resultsData.length <= 0){
+            alert("Data Table is Empty")
+          }
+          else{
             var csvContent = "data:text/csv;charset=utf-8,";
 
             // Add headers
@@ -306,7 +324,7 @@
             link.setAttribute("download", "results.csv");
             document.body.appendChild(link);
             link.click();
-        }
+          }}
     </script>
 </body>
 </html>
