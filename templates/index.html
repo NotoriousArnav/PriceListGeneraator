@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculate Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Calculate Form</h1>
+        <form id="calculateForm">
+            <div class="form-group">
+                <label for="productName">Product Name</label>
+                <input type="text" class="form-control" id="productName" required>
+            </div>
+            <div class="form-group">
+                <label for="MRPpu">MRP per Unit</label>
+                <input type="number" step="0.01" class="form-control" id="MRPpu" required>
+            </div>
+            <div class="form-group">
+                <label for="qty">Case Size</label>
+                <input type="number" class="form-control" id="qty" required>
+            </div>
+            <button type="submit" class="btn btn-primary" onclick="calculate(event)">Calculate</button>
+        </form>
+
+        <button id="collapseButton" class="btn btn-secondary mt-4" style="display: none;" onclick="toggleCollapse()">Collapse/Expand Results</button>
+
+        <table id="resultsTable" class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">MRP per Unit</th>
+                    <th scope="col">Case Size</th>
+                    <th scope="col">GST</th>
+                    <th scope="col">MRP per Case</th>
+                    <th scope="col">Price to Distributor</th>
+                    <th scope="col">Prce to retail</th>
+                    <th scope="col">Price to SS</th>
+                    <th scope="col">Price to W/S</th>
+                    <th scope="col">Basic Price</th>
+                    <th scope="col">Distributor Margin</th>
+                    <th scope="col">Import Duties</th>
+                    <th scope="col">Net Rate</th>
+                    <th scope="col">Retail margin</th>
+                    <th scope="col">SS Margin</th>
+                    <th scope="col">Trade Discount</th>
+                    <th scope="col">W/S Margin</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="mt-4">
+            <button id="exportCSV" class="btn btn-primary me-2" style="display: none;" onclick="exportCSV()">Export as CSV</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.0/dist/alpine.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js" integrity="sha384-gljovmY2MIhGOsSKD/fTdAeIVhb55hDqFmU7i2XY9VjWV32CtAlAf9g9FFKw2izR" crossorigin="anonymous"></script>
+    <script>
+        var resultsData = [];
+
+        function calculate(event) {
+            event.preventDefault();
+
+            var productName = document.getElementById('productName').value;
+            var MRPpu = parseFloat(document.getElementById('MRPpu').value);
+            var qty = parseFloat(document.getElementById('qty').value);
+
+            axios.get('/api/calculate', {
+                params: {
+                    MRPpu: MRPpu,
+                    qty: qty
+                }
+            })
+            .then(function (response) {
+                var results = response.data;
+
+                var resultsTable = document.getElementById('resultsTable');
+
+                if (resultsData.length === 0) {
+                    var headerRow = document.createElement('tr');
+                    var productNameHeader = document.createElement('th');
+                }
+
+                var dataRow = document.createElement('tr');
+                var productNameCell = document.createElement('td');
+                productNameCell.innerText = productName;
+                dataRow.appendChild(productNameCell);
+                var MRPpuCell = document.createElement('td');
+                MRPpuCell.innerText = MRPpu;
+                dataRow.appendChild(MRPpuCell);
+                var qtyCell = document.createElement('td');
+                qtyCell.innerText = qty;
+                dataRow.appendChild(qtyCell);
+                Object.keys(results).forEach(function (key) {
+                    var valueCell = document.createElement('td');
+                    valueCell.innerText = results[key].value;
+                    dataRow.appendChild(valueCell);
+                });
+
+                resultsTable.querySelector('tbody').appendChild(dataRow);
+
+                resultsData.push({
+                    productName: productName,
+                    MRPpu: MRPpu,
+                    qty: qty,
+                    results: results
+                });
+
+                if (resultsData.length === 1) {
+                    document.getElementById('collapseButton').style.display = 'block';
+                    document.getElementById('exportCSV').style.display = 'block';
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+
+        function toggleCollapse() {
+            var isCollapsed = document.getElementById('collapseButton').innerText === 'Collapse Results';
+
+            if (isCollapsed) {
+                document.getElementById('collapseButton').innerText = 'Expand Results';
+            } else {
+                document.getElementById('collapseButton').innerText = 'Collapse Results';
+            }
+
+            var collapseElements = document.getElementsByClassName('collapse');
+            for (var i = 0; i < collapseElements.length; i++) {
+                var element = collapseElements[i];
+                if (isCollapsed) {
+                    element.classList.remove('show');
+                } else {
+                    element.classList.add('show');
+                }
+            }
+        }
+
+        function exportCSV() {
+            var csvContent = "data:text/csv;charset=utf-8,";
+
+            // Add headers
+            var headerRow = ["Product Name", "MRP per Unit", "Case Size"];
+            var firstResult = resultsData[0].results;
+            Object.keys(firstResult).forEach(function (key) {
+                headerRow.push(firstResult[key].name);
+            });
+            csvContent += headerRow.join(",") + "\r\n";
+
+            // Add data rows
+            resultsData.forEach(function (data) {
+                var row = [data.productName, data.MRPpu, data.qty];
+                Object.keys(data.results).forEach(function (key) {
+                    row.push(data.results[key].value);
+                });
+                csvContent += row.join(",") + "\r\n";
+            });
+
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "results.csv");
+            document.body.appendChild(link);
+            link.click();
+        }
+    </script>
+</body>
+</html>
+
+

@@ -10,7 +10,25 @@ class Constants:
             "name": "Basic Price",
             "value": self.IDpercent['value'] + self.TDpercent['value'] + 1
         }
+def calculate(MRPpu, qty, constants):
+    results = {}
+    results['MRPpc'] = round(MRPpu * qty, 3) # MRP per Case
+    results['PtR'] = round(results['MRPpc'] / (constants.RMpercent['value'] + 1), 3) # Price to retail
+    results['rmargin'] = round(results['MRPpc'] - results['PtR'], 3) # Retail margin
+    results['PtWS'] = round(results['PtR'] / (constants.WSPercent['value'] + 1), 3) # Price to W/S
+    results['wsmargin'] = round(results['PtR'] - results['PtWS'], 3) # W/S Margin
+    results['PtD'] = round(results['PtWS'] / (constants.DistMargin['value'] + 1), 3) # Price to Distributor
+    results['distmargin'] = round(results['PtWS'] - results['PtD'], 3) # Distributor Margin
+    results['PtSS'] = round(results['PtD'] / (constants.SSMargin['value'] + 1), 3) # Price to SS
+    results['ssmarginn'] = round(results['PtD'] - results['PtSS'], 3) # SS Margin
+    results['netrate'] = round(results['PtSS'] / (constants.GST['value'] + 1), 3) # Net Rate
+    results['GST'] = round(results['PtD'] - results['netrate'], 3) # GST
+    results['basic_price'] = round(results['netrate'] / constants.basic_price['value'], 3) # Basic Price
+    results['importduty'] = round(results['basic_price'] / (constants.IDpercent['value'] + 1), 3) # Import Duties
+    results['td'] = round(results['basic_price'] / (constants.TDpercent['value'] + 1), 3) # Trade Discount
+    return results
 
+"""
 def calculate(MRPpu, qty, constants):
     results = {}
     results['MRPpc'] = MRPpu*qty # MRP per Case
@@ -28,6 +46,7 @@ def calculate(MRPpu, qty, constants):
     results['importduty'] = results['basic_price']/(constants.IDpercent['value']+1) # Import Duties
     results['td'] = results['basic_price']/(constants.TDpercent['value']+1) # Trade Discount
     return results
+"""
 
 if __name__ == "__main__":
     constants = Constants('consts.json')
