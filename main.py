@@ -1,14 +1,35 @@
 from flask import Flask, render_template, request, jsonify
 from app import calculate, Constants
+from io import BytesIO
+import json
 
 app = Flask(__name__)
-constants = Constants('consts.json')
+
+@app.route('/api/constants', methods=['GET'])
+def get_constants():
+    constants = Constants('consts.json')
+    return jsonify(constants.__dict__)
 
 @app.route('/api/calculate', methods=['GET'])
 def calculate_api():
+    constants = Constants('consts.json')
     MRPpu = float(request.args.get('MRPpu'))
     qty = float(request.args.get('qty'))
-    results = calculate(MRPpu, qty, constants)
+    if 'new_const' in request.args:
+        nc = {
+            "DistMargin": {"name": "Distributor Margin", "value": float(request.args['dist_margin'])},
+            "GST": {"name": "GST", "value": float(request.args['gst'])},
+            "IDpercent": {"name": "Import Duty", "value": float(request.args['id_percent'])},
+            "RMpercent": {"name": "Retail Margin", "value": float(request.args['rm_percent'])},
+            "SSMargin": {"name": "SS Margin", "value": float(request.args['ss_margin'])},
+            "TDpercent": {"name": "Trade Discount", "value": float(request.args['td_percent'])},
+            "WSPercent": {"name": "W/S Margin", "value": float(request.args['ws_percent'])},
+            "basic_price": {"name": "Basic Price", "value": float(request.args['basic_price'])}
+        }
+        constants.__dict__.update(nc)
+        results = calculate(MRPpu, qty, constants)
+    else:
+        results = calculate(MRPpu, qty, constants)
 
     formatted_results = {
         '14MRPpc': {'name': 'MRP per Case', 'value': results['MRPpc']},

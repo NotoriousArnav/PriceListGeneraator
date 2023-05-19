@@ -6,6 +6,25 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Price List Formatter</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="https://github.com/NotoriousArnav/PriceListGeneraator">Source Code</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://brocode-tech.netlify.app">BroCode Tech Community</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://github.com/NotoriousArnav">Contact the Dev</a>
+      </li>
+    </ul>
+  </div>
+</nav>
     <div class="container">
         <h1>Calculate Form</h1>
         <form id="calculateForm">
@@ -54,6 +73,107 @@
             <button id="exportCSV" class="btn btn-primary me-2" style="display: none;" onclick="exportCSV()">Export as CSV</button>
         </div>
     </div>
+    <!-- Existing code -->
+
+<div class="container">
+    <div class="row">
+      <div class="col-md-6" x-data="{ isDisabled: true }">
+            <h2>Constants</h2>
+            <button class="btn btn-primary" @click="isDisabled = !isDisabled">Change Values</button>
+            
+            <div class="grid-container">
+                <div class="grid-item">
+                    <label for="dist-margin">Distributor Margin:</label>
+                    <input type="text" id="dist-margin" class="form-control" x-bind:disabled="isDisabled">
+                </div>
+                
+                <div class="grid-item">
+                    <label for="gst">GST:</label>
+                    <input type="text" id="gst" class="form-control" x-bind:disabled="isDisabled">
+                </div>
+                
+                <div class="grid-item">
+                    <label for="import-duty">Import Duty:</label>
+                    <input type="text" id="import-duty" class="form-control" x-bind:disabled="isDisabled">
+                </div>
+                
+                <div class="grid-item">
+                    <label for="retail-margin">Retail Margin:</label>
+                    <input type="text" id="retail-margin" class="form-control" x-bind:disabled="isDisabled">
+                </div>
+                
+                <div class="grid-item">
+                    <label for="ss-margin">SS Margin:</label>
+                    <input type="text" id="ss-margin" class="form-control" x-bind:disabled="isDisabled">
+                </div>
+                
+                <div class="grid-item">
+                    <label for="trade-discount">Trade Discount:</label>
+                    <input type="text" id="trade-discount" class="form-control" x-bind:disabled="isDisabled">
+                </div>
+                
+                <div class="grid-item">
+                    <label for="ws-margin">W/S Margin:</label>
+                    <input type="text" id="ws-margin" class="form-control" x-bind:disabled="isDisabled">
+                </div>
+                
+                <div class="grid-item">
+                    <label for="basic-price">Basic Price:</label>
+                    <input type="text" id="basic-price" class="form-control" x-bind:disabled="isDisabled">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .grid-item {
+        background-color: #f9f9f9;
+        padding: 1rem;
+        border: 1px solid #ccc;
+    }
+    
+    @media (max-width: 720px) {
+        .grid-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+
+<!-- Existing code -->
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    // Load Constants
+    axios.get('/api/constants')
+        .then(function (response) {
+            const constants = response.data;
+            
+            // Update the constant values in the frontend
+            document.getElementById('dist-margin').value = constants.DistMargin.value;
+            document.getElementById('gst').value = constants.GST.value;
+            document.getElementById('import-duty').value = constants.IDpercent.value;
+            document.getElementById('retail-margin').value = constants.RMpercent.value;
+            document.getElementById('ss-margin').value = constants.SSMargin.value;
+            document.getElementById('trade-discount').value = constants.TDpercent.value;
+            document.getElementById('ws-margin').value = constants.WSPercent.value;
+            document.getElementById('basic-price').value = constants.basic_price.value;
+            
+            // Update other constants as needed
+            
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+</script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.0/dist/alpine.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -67,11 +187,30 @@
             var productName = document.getElementById('productName').value;
             var MRPpu = parseFloat(document.getElementById('MRPpu').value);
             var qty = parseFloat(document.getElementById('qty').value);
+              // Fetch new constant values from input tags
+  var distMargin = parseFloat(document.getElementById('dist-margin').value);
+  var gst = parseFloat(document.getElementById('gst').value);
+  var idPercent = parseFloat(document.getElementById('import-duty').value);
+  var rmPercent = parseFloat(document.getElementById('retail-margin').value);
+  var ssMargin = parseFloat(document.getElementById('ss-margin').value);
+  var tdPercent = parseFloat(document.getElementById('trade-discount').value);
+  var wsPercent = parseFloat(document.getElementById('ws-margin').value);
+  var basicPrice = parseFloat(document.getElementById('basic-price').value);
+
 
             axios.get('/api/calculate', {
                 params: {
                     MRPpu: MRPpu,
-                    qty: qty
+                    qty: qty,
+                    new_const: 1,
+                    dist_margin: distMargin,
+                    gst: gst,
+                    id_percent: idPercent,
+                    rm_percent: rmPercent,
+                    ss_margin: ssMargin,
+                    td_percent: tdPercent,
+                    ws_percent: wsPercent,
+                    basic_price: basicPrice,
                 }
             })
             .then(function (response) {
