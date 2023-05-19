@@ -11,20 +11,20 @@ def calculate_api():
     results = calculate(MRPpu, qty, constants)
 
     formatted_results = {
-        'MRPpc': {'name': 'MRP per Case', 'value': results['MRPpc']},
-        'PtR': {'name': 'Price to Retail', 'value': results['PtR']},
-        'rmargin': {'name': 'Retail margin', 'value': results['rmargin']},
-        'PtWS': {'name': 'Price to W/S', 'value': results['PtWS']},
-        'wsmargin': {'name': 'W/S Margin', 'value': results['wsmargin']},
-        'PtD': {'name': 'Price to Distributor', 'value': results['PtD']},
-        'distmargin': {'name': 'Distributor Margin', 'value': results['distmargin']},
-        'PtSS': {'name': 'Price to SS', 'value': results['PtSS']},
-        'ssmarginn': {'name': 'SS Margin', 'value': results['ssmarginn']},
-        'netrate': {'name': 'Net Rate', 'value': results['netrate']},
-        'GST': {'name': 'GST', 'value': results['GST']},
-        'basic_price': {'name': 'Basic Price', 'value': results['basic_price']},
-        'importduty': {'name': 'Import Duties', 'value': results['importduty']},
-        'td': {'name': 'Trade Discount', 'value': results['td']}
+        '14MRPpc': {'name': 'MRP per Case', 'value': results['MRPpc']},
+        '12PtR': {'name': 'Price to Retail', 'value': results['PtR']},
+        '13rmargin': {'name': 'Retail margin', 'value': results['rmargin']},
+        '10PtWS': {'name': 'Price to W/S', 'value': results['PtWS']},
+        '11wsmargin': {'name': 'W/S Margin', 'value': results['wsmargin']},
+        '08PtD': {'name': 'Price to Distributor', 'value': results['PtD']},
+        '09distmargin9': {'name': 'Distributor Margin', 'value': results['distmargin']},
+        '06PtSS': {'name': 'Price to SS', 'value': results['PtSS']},
+        '07ssmarginn': {'name': 'SS Margin', 'value': results['ssmarginn']},
+        '04netrate': {'name': 'Net Rate', 'value': results['netrate']},
+        '05GST': {'name': 'GST', 'value': results['GST']},
+        '01basic_price': {'name': 'Basic Price', 'value': results['basic_price']},
+        '03importduty': {'name': 'Import Duties', 'value': results['importduty']},
+        '02td': {'name': 'Trade Discount', 'value': results['td']}
     }
 
     return jsonify(formatted_results)

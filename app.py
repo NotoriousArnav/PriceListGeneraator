@@ -10,6 +10,8 @@ class Constants:
             "name": "Basic Price",
             "value": self.IDpercent['value'] + self.TDpercent['value'] + 1
         }
+
+
 def calculate(MRPpu, qty, constants):
     results = {}
     results['MRPpc'] = round(MRPpu * qty, 3) # MRP per Case
