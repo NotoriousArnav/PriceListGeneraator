@@ -84,7 +84,7 @@
 <div class="container">
     <div class="row">
       <div class="col-md-6" x-data="{ isDisabled: true }">
-            <h2>Constants</h2>
+            <h2>Constants (%)</h2>
             <button class="btn btn-primary" @click="isDisabled = !isDisabled">Change Values</button>
             
             <div class="grid-container">
@@ -97,12 +97,6 @@
                     <label for="gst">GST:</label>
                     <input type="text" id="gst" class="form-control" x-bind:disabled="isDisabled">
                 </div>
-                
-                <div class="grid-item">
-                    <label for="import-duty">Import Duty:</label>
-                    <input type="text" id="import-duty" class="form-control" x-bind:disabled="isDisabled">
-                </div>
-                
                 <div class="grid-item">
                     <label for="retail-margin">Retail Margin:</label>
                     <input type="text" id="retail-margin" class="form-control" x-bind:disabled="isDisabled">
@@ -121,12 +115,7 @@
                 <div class="grid-item">
                     <label for="ws-margin">W/S Margin:</label>
                     <input type="text" id="ws-margin" class="form-control" x-bind:disabled="isDisabled">
-                </div>
-                
-                <div class="grid-item">
-                    <label for="basic-price">Basic Price:</label>
-                    <input type="text" id="basic-price" class="form-control" x-bind:disabled="isDisabled">
-                </div>
+                </div> 
             </div>
         </div>
     </div>
@@ -164,14 +153,12 @@
             const constants = response.data;
             
             // Update the constant values in the frontend
-            document.getElementById('dist-margin').value = constants.DistMargin.value;
-            document.getElementById('gst').value = constants.GST.value;
-            document.getElementById('import-duty').value = constants.IDpercent.value;
-            document.getElementById('retail-margin').value = constants.RMpercent.value;
-            document.getElementById('ss-margin').value = constants.SSMargin.value;
-            document.getElementById('trade-discount').value = constants.TDpercent.value;
-            document.getElementById('ws-margin').value = constants.WSPercent.value;
-            document.getElementById('basic-price').value = constants.basic_price.value;
+            document.getElementById('dist-margin').value = constants.DistMargin.value*100;
+            document.getElementById('gst').value = constants.GST.value*100;
+            document.getElementById('retail-margin').value = constants.RMpercent.value*100;
+            document.getElementById('ss-margin').value = constants.SSMargin.value*100;
+            document.getElementById('trade-discount').value = constants.TDpercent.value*100;
+            document.getElementById('ws-margin').value = constants.WSPercent.value*100;
             
             // Update other constants as needed
             
@@ -205,26 +192,22 @@ function checEmpty() {
               // Fetch new constant values from input tags
   var distMargin = parseFloat(document.getElementById('dist-margin').value);
   var gst = parseFloat(document.getElementById('gst').value);
-  var idPercent = parseFloat(document.getElementById('import-duty').value);
   var rmPercent = parseFloat(document.getElementById('retail-margin').value);
   var ssMargin = parseFloat(document.getElementById('ss-margin').value);
   var tdPercent = parseFloat(document.getElementById('trade-discount').value);
   var wsPercent = parseFloat(document.getElementById('ws-margin').value);
-  var basicPrice = parseFloat(document.getElementById('basic-price').value);
 
             axios.get('/api/calculate', {
                 params: {
                     MRPpu: MRPpu,
                     qty: qty,
                     new_const: 1,
-                    dist_margin: distMargin,
-                    gst: gst,
-                    id_percent: idPercent,
-                    rm_percent: rmPercent,
-                    ss_margin: ssMargin,
-                    td_percent: tdPercent,
-                    ws_percent: wsPercent,
-                    basic_price: basicPrice,
+                    dist_margin: distMargin/100,
+                    gst: gst/100,
+                    rm_percent: rmPercent/100,
+                    ss_margin: ssMargin/100,
+                    td_percent: tdPercent/100,
+                    ws_percent: wsPercent/100,
                 }
             })
             .then(function (response) {

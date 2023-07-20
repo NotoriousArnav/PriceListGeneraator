@@ -11,6 +11,13 @@ class Constants:
             "value": self.IDpercent['value'] + self.TDpercent['value'] + 1
         }
 
+    def updateBasicPrice(self):
+        self.basic_price = {
+            "name": "Basic Price",
+            "value": self.IDpercent['value'] + self.TDpercent['value'] + 1
+        }
+
+
 
 def calculate(MRPpu, qty, constants):
     results = {}
@@ -26,7 +33,6 @@ def calculate(MRPpu, qty, constants):
     results['netrate'] = round(results['PtSS'] / (constants.GST['value'] + 1), 3) # Net Rate
     results['GST'] = round(results['PtD'] - results['netrate'], 3) # GST
     results['basic_price'] = round(results['netrate'] / constants.basic_price['value'], 3) # Basic Price
-    results['importduty'] = round(results['basic_price'] / (constants.IDpercent['value'] + 1), 3) # Import Duties
     results['td'] = round(results['basic_price'] / (constants.TDpercent['value'] + 1), 3) # Trade Discount
     return results
 

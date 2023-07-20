@@ -24,9 +24,9 @@ def calculate_api():
             "SSMargin": {"name": "SS Margin", "value": float(request.args['ss_margin'])},
             "TDpercent": {"name": "Trade Discount", "value": float(request.args['td_percent'])},
             "WSPercent": {"name": "W/S Margin", "value": float(request.args['ws_percent'])},
-            "basic_price": {"name": "Basic Price", "value": float(request.args['basic_price'])}
         }
         constants.__dict__.update(nc)
+        constants.updateBasicPrice()
         results = calculate(MRPpu, qty, constants)
     else:
         results = calculate(MRPpu, qty, constants)
